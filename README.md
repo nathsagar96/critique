@@ -1,2 +1,3 @@
 # critique
-Restuarant Review Platform using Spring Boot
+
+Restaurant Review Platform using Spring Boot

@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: critique
+  elasticsearch:
+    uris: http://localhost:9200
+  security:
+    oauth2:
+      resource-server:
+        jwt:
+          issuer-uri: http://localhost:8090/realms/critique
