@@ -26,6 +26,9 @@ public class Address {
   private String city;
 
   @Field(type = FieldType.Keyword)
+  private String state;
+
+  @Field(type = FieldType.Keyword)
   private String postalCode;
 
   @Field(type = FieldType.Keyword)
