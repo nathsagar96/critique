@@ -1,2 +1,2 @@
 # critique
-a restaurant review application using spring boot 3
+a restaurant review application using spring boot 4
