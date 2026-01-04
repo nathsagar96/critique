@@ -1,10 +1,84 @@
 spring:
   application:
     name: critique
+
   elasticsearch:
     uris: http://localhost:9200
+
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: http://localhost:9090/realms/critique
+          jwk-set-uri: http://localhost:9090/realms/critique/protocol/openid-connect/certs
+
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 5MB
+      max-request-size: 10MB
+
+app:
+  upload:
+    dir: uploads
+    max-file-size: 5242880 # 5MB in bytes
+
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: never
+    include-exception: false
+
+logging:
+  level:
+    root: INFO
+    com.critique: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.data.elasticsearch: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+
+  elasticsearch:
+    uris: http://localhost:9200
+
+logging:
+  level:
+    com.critique: DEBUG
+
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URIS}
+    username: ${ELASTICSEARCH_USERNAME}
+    password: ${ELASTICSEARCH_PASSWORD}
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI}
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI}
+
+logging:
+  level:
+    root: WARN
+    com.critique: INFO
+    org.springframework.security: INFO

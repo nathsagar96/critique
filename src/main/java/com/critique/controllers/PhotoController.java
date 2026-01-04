@@ -1,37 +1,47 @@
 package com.critique.controllers;
 
+import com.critique.dtos.requests.PhotoUploadRequest;
 import com.critique.dtos.responses.PhotoResponse;
-import com.critique.mappers.PhotoMapper;
 import com.critique.services.PhotoService;
-import java.util.UUID;
+import com.critique.utils.SecurityUtils;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/api/v1/photos")
+@RequiredArgsConstructor
 public class PhotoController {
 
     private final PhotoService photoService;
-    private final PhotoMapper photoMapper;
+    private final SecurityUtils securityUtils;
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    public PhotoResponse uploadPhoto(@RequestParam("file") MultipartFile file) {
-        return photoMapper.toResponse(photoService.uploadPhoto(file));
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<PhotoResponse> uploadPhoto(
+            @RequestPart("file") MultipartFile file, @RequestPart(value = "caption", required = false) String caption) {
+
+        String userId = securityUtils.getCurrentUserId();
+
+        PhotoUploadRequest request = caption != null ? new PhotoUploadRequest(caption) : null;
+
+        PhotoResponse response = photoService.uploadPhoto(file, request, userId);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping(path = "/{id:.+}")
-    public ResponseEntity<Resource> getPhotoById(@PathVariable UUID id) {
-        return photoService
-                .getPhotoAsResource(id)
-                .map(photo -> ResponseEntity.ok()
-                        .contentType(MediaTypeFactory.getMediaType(photo).orElse(MediaType.APPLICATION_OCTET_STREAM))
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "inline")
-                        .body(photo))
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/{photoId}/file")
+    public ResponseEntity<byte[]> getPhotoFile(@PathVariable String photoId) {
+        byte[] photoData = photoService.getPhotoFile(photoId);
+        String contentType = photoService.getPhotoContentType(photoId);
+
+        MediaType mediaType;
+        try {
+            mediaType = MediaType.parseMediaType(contentType);
+        } catch (Exception e) {
+            mediaType = MediaType.IMAGE_JPEG;
+        }
+
+        return ResponseEntity.ok().contentType(mediaType).body(photoData);
     }
 }

@@ -1,39 +1,47 @@
 package com.critique.entities;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 import lombok.*;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Review {
+    @Field(type = FieldType.Keyword)
+    private String id;
 
     @Field(type = FieldType.Keyword)
-    private UUID id;
+    private String restaurantId;
+
+    @Field(type = FieldType.Keyword)
+    private String userId;
 
     @Field(type = FieldType.Text)
+    private String userName;
+
+    @Field(type = FieldType.Text, analyzer = "standard")
     private String content;
 
     @Field(type = FieldType.Integer)
     private Integer rating;
 
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second)
-    private LocalDateTime datePosted;
-
-    @Field(type = FieldType.Date, format = DateFormat.date_hour_minute_second)
-    private LocalDateTime dateUpdated;
-
     @Field(type = FieldType.Nested)
+    @Builder.Default
     private List<Photo> photos = new ArrayList<>();
 
-    @Field(type = FieldType.Nested)
-    private User writtenBy;
+    @Field(type = FieldType.Date, format = DateFormat.date_time)
+    private Instant createdAt;
+
+    @Field(type = FieldType.Date, format = DateFormat.date_time)
+    private Instant lastEditedAt;
+
+    public boolean canEdit(Instant now) {
+        return now.isBefore(createdAt.plusSeconds(48 * 60 * 60));
+    }
 }

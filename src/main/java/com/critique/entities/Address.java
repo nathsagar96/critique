@@ -3,14 +3,13 @@ package com.critique.entities;
 import lombok.*;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.GeoPointField;
 
-@Getter
-@Setter
+@Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Address {
-
     @Field(type = FieldType.Keyword)
     private String streetNumber;
 
@@ -31,4 +30,7 @@ public class Address {
 
     @Field(type = FieldType.Keyword)
     private String country;
+
+    @GeoPointField
+    private GeoLocation location;
 }
