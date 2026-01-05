@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth.requestMatchers(
                                 "/api/v1/restaurants",
                                 "/api/v1/restaurants/{restaurantId}",
+                                "/api/v1/restaurants/{restaurantId}/reviews",
                                 "/api/v1/photos/{photoId}/file",
                                 "/actuator/**")
                         .permitAll()

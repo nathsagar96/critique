@@ -5,6 +5,7 @@ import com.critique.dtos.requests.UpdateRestaurantRequest;
 import com.critique.dtos.responses.RestaurantResponse;
 import com.critique.entities.Photo;
 import com.critique.entities.Restaurant;
+import com.critique.entities.Review;
 import com.critique.exceptions.UnauthorizedException;
 import com.critique.mappers.RestaurantMapper;
 import com.critique.repositories.RestaurantRepository;
@@ -79,5 +80,32 @@ public class RestaurantService {
         log.info("Restaurant '{}' updated successfully", restaurantId);
 
         return restaurantMapper.toResponse(updated);
+    }
+
+    public Restaurant getRestaurantEntity(String restaurantId) {
+        return restaurantRepository
+                .findById(restaurantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id " + restaurantId));
+    }
+
+    public void recalculateAverageRating(Restaurant restaurant) {
+        if (restaurant.getReviews() == null || restaurant.getReviews().isEmpty()) {
+            restaurant.setAverageRating(0.0);
+            restaurant.setTotalReviews(0);
+            return;
+        }
+
+        double average = restaurant.getReviews().stream()
+                .mapToInt(Review::getRating)
+                .average()
+                .orElse(0.0);
+
+        restaurant.setAverageRating(Math.round(average * 10.0) / 10.0);
+        restaurant.setTotalReviews(restaurant.getReviews().size());
+    }
+
+    @Transactional
+    public void saveRestaurant(Restaurant restaurant) {
+        restaurantRepository.save(restaurant);
     }
 }
