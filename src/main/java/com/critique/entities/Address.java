@@ -4,6 +4,7 @@ import lombok.*;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 import org.springframework.data.elasticsearch.annotations.GeoPointField;
+import org.springframework.data.elasticsearch.core.geo.GeoPoint;
 
 @Data
 @Builder
@@ -32,5 +33,5 @@ public class Address {
     private String country;
 
     @GeoPointField
-    private GeoLocation location;
+    private GeoPoint location;
 }
