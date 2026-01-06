@@ -10,7 +10,6 @@ import com.critique.entities.Review;
 import com.critique.exceptions.BusinessException;
 import com.critique.exceptions.UnauthorizedException;
 import com.critique.mappers.ReviewMapper;
-import com.critique.repositories.RestaurantRepository;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -27,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ReviewService {
 
-    private final RestaurantRepository restaurantRepository;
     private final ReviewMapper reviewMapper;
     private final PhotoService photoService;
     private final RestaurantService restaurantService;
@@ -111,11 +109,12 @@ public class ReviewService {
     }
 
     @Transactional
-    public ReviewResponse updateReview(String reviewId, UpdateReviewRequest request, String userId) {
+    public ReviewResponse updateReview(
+            String restaurantId, String reviewId, UpdateReviewRequest request, String userId) {
 
         log.info("Updating review '{}' by user '{}'", reviewId, userId);
 
-        Restaurant restaurant = findRestaurantByReviewId(reviewId);
+        Restaurant restaurant = restaurantService.getRestaurantEntity(restaurantId);
 
         Review review = restaurant.getReviews().stream()
                 .filter(r -> r.getId().equals(reviewId))
@@ -155,23 +154,6 @@ public class ReviewService {
         return reviewMapper.toResponse(review);
     }
 
-    private Restaurant findRestaurantByReviewId(String reviewId) {
-
-        Iterable<Restaurant> allRestaurants = restaurantRepository.findAll();
-
-        for (Restaurant restaurant : allRestaurants) {
-            if (restaurant.getReviews() != null) {
-                boolean hasReview =
-                        restaurant.getReviews().stream().anyMatch(r -> r.getId().equals(reviewId));
-                if (hasReview) {
-                    return restaurant;
-                }
-            }
-        }
-
-        throw new ResourceNotFoundException("Review not found with id " + reviewId);
-    }
-
     private Comparator<Review> parseSortParameter(String sortParam) {
         if (sortParam == null || sortParam.isBlank()) {
             sortParam = "date,desc";
@@ -193,5 +175,29 @@ public class ReviewService {
         } else {
             return comparator.reversed();
         }
+    }
+
+    public void deleteReview(String restaurantId, String reviewId, String userId) {
+
+        log.info("Deleting review '{}' by user '{}'", reviewId, userId);
+
+        Restaurant restaurant = restaurantService.getRestaurantEntity(restaurantId);
+
+        Review review = restaurant.getReviews().stream()
+                .filter(r -> r.getId().equals(reviewId))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Review not found with id " + reviewId));
+
+        if (!review.getUserId().equals(userId)) {
+            throw new UnauthorizedException("You are not authorized to delete this review");
+        }
+
+        restaurant.getReviews().remove(review);
+        restaurantService.recalculateAverageRating(restaurant);
+
+        restaurant.setUpdatedAt(Instant.now());
+        restaurantService.saveRestaurant(restaurant);
+
+        log.info("Review '{}' deleted successfully", reviewId);
     }
 }

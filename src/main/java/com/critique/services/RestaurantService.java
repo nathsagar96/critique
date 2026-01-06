@@ -108,4 +108,20 @@ public class RestaurantService {
     public void saveRestaurant(Restaurant restaurant) {
         restaurantRepository.save(restaurant);
     }
+
+    @Transactional
+    public void deleteRestaurant(String restaurantId, String userId) {
+        log.info("Deleting restaurant '{}' by user '{}'", restaurantId, userId);
+
+        Restaurant restaurant = restaurantRepository
+                .findById(restaurantId)
+                .orElseThrow(() -> new ResourceNotFoundException("Restaurant not found with id " + restaurantId));
+
+        if (!restaurant.getOwnerId().equals(userId)) {
+            throw new UnauthorizedException("You are not authorized to delete this restaurant");
+        }
+
+        restaurantRepository.deleteById(restaurantId);
+        log.info("Restaurant '{}' deleted successfully", restaurantId);
+    }
 }

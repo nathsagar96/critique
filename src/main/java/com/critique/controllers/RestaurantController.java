@@ -56,4 +56,13 @@ public class RestaurantController {
 
         return ResponseEntity.ok(response);
     }
+
+    @DeleteMapping("/{restaurantId}")
+    public ResponseEntity<Void> deleteRestaurant(@PathVariable String restaurantId) {
+        String userId = securityUtils.getCurrentUserId();
+
+        restaurantService.deleteRestaurant(restaurantId, userId);
+
+        return ResponseEntity.noContent().build();
+    }
 }

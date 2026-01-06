@@ -15,14 +15,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/restaurants/{restaurantId}/reviews")
 @RequiredArgsConstructor
 public class ReviewController {
 
     private final ReviewService reviewService;
     private final SecurityUtils securityUtils;
 
-    @GetMapping("/restaurants/{restaurantId}/reviews")
+    @GetMapping
     public ResponseEntity<PageResponse<ReviewResponse>> getRestaurantReviews(
             @PathVariable String restaurantId,
             @RequestParam(defaultValue = "date,desc") String sort,
@@ -34,7 +34,7 @@ public class ReviewController {
         return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/restaurants/{restaurantId}/reviews")
+    @PostMapping
     public ResponseEntity<ReviewResponse> createReview(
             @PathVariable String restaurantId, @Valid @RequestBody CreateReviewRequest request) {
 
@@ -46,14 +46,25 @@ public class ReviewController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @PutMapping("/reviews/{reviewId}")
+    @PutMapping("/{reviewId}")
     public ResponseEntity<ReviewResponse> updateReview(
-            @PathVariable String reviewId, @Valid @RequestBody UpdateReviewRequest request) {
+            @PathVariable String restaurantId,
+            @PathVariable String reviewId,
+            @Valid @RequestBody UpdateReviewRequest request) {
 
         String userId = securityUtils.getCurrentUserId();
 
-        ReviewResponse response = reviewService.updateReview(reviewId, request, userId);
+        ReviewResponse response = reviewService.updateReview(restaurantId, reviewId, request, userId);
 
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<Void> deleteReview(@PathVariable String restaurantId, @PathVariable String reviewId) {
+        String userId = securityUtils.getCurrentUserId();
+
+        reviewService.deleteReview(restaurantId, reviewId, userId);
+
+        return ResponseEntity.noContent().build();
     }
 }
