@@ -1,10 +1,12 @@
 package com.critique.configs;
 
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -33,15 +35,23 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.requestMatchers(
-                                "/api/v1/restaurants",
-                                "/api/v1/restaurants/{restaurantId}",
-                                "/api/v1/restaurants/{restaurantId}/reviews",
-                                "/api/v1/photos/{photoId}",
-                                "/actuator/**")
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated())
+                .authorizeHttpRequests(
+                        auth -> auth.requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html")
+                                .permitAll()
+                                .requestMatchers(
+                                        HttpMethod.GET,
+                                        "/api/v1/restaurants",
+                                        "/api/v1/restaurants/{restaurantId}",
+                                        "/api/v1/restaurants/{restaurantId}/reviews",
+                                        "/api/v1/photos/{photoId}",
+                                        "/actuator/**")
+                                .permitAll()
+                                .anyRequest()
+                                .authenticated())
+                .exceptionHandling(ex -> ex.authenticationEntryPoint((request, response, exception) ->
+                                response.sendError(HttpServletResponse.SC_UNAUTHORIZED))
+                        .accessDeniedHandler(
+                                (request, response, exception) -> response.sendError(HttpServletResponse.SC_FORBIDDEN)))
                 .oauth2ResourceServer(
                         oauth2 -> oauth2.jwt(jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
 

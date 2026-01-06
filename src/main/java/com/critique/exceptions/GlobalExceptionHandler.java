@@ -2,6 +2,7 @@ package com.critique.exceptions;
 
 import java.net.URI;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.elasticsearch.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.security.access.AccessDeniedException;
@@ -22,6 +23,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
         problemDetail.setTitle("Business Rule Violation");
         problemDetail.setType(URI.create("https://api.critique.com/errors/business-error"));
+
+        return problemDetail;
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ProblemDetail handleResourceNotFoundException(ResourceNotFoundException ex) {
+        log.warn("Resource not found: {}", ex.getMessage());
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(HttpStatus.NOT_FOUND, ex.getMessage());
+
+        problemDetail.setTitle("Resource Not Found");
+        problemDetail.setType(URI.create("https://api.critique.com/errors/not-found"));
 
         return problemDetail;
     }

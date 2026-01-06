@@ -4,7 +4,7 @@ import com.critique.dtos.requests.PhotoUploadRequest;
 import com.critique.dtos.responses.PhotoResponse;
 import com.critique.entities.Photo;
 import com.critique.exceptions.BusinessException;
-import com.critique.exceptions.UnauthorizedException; // Added import for UnauthorizedException
+import com.critique.exceptions.UnauthorizedException;
 import com.critique.mappers.PhotoMapper;
 import com.critique.repositories.PhotoRepository;
 import java.io.IOException;
