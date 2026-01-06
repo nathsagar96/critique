@@ -19,7 +19,8 @@ import java.util.List;
                 {
                     "id": "photo1",
                     "caption": "Delicious pasta dish",
-                    "url": "https://example.com/photos/photo1.jpg"
+                    "uploadedAt": "2023-01-15T10:30:00Z",
+                    "uploadedBy": "user789"
                 }
             ],
             "createdAt": "2023-01-15T10:30:00Z",

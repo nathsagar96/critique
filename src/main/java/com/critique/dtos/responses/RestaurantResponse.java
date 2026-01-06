@@ -19,30 +19,61 @@ import java.util.List;
             "averageRating": 4.5,
             "totalReviews": 120,
             "address": {
-                "street": "123 Main St",
+                "streetNumber": "123",
+                "streetName": "Main St",
+                "unit": "Apt 4B",
                 "city": "New York",
                 "state": "NY",
                 "postalCode": "10001",
                 "country": "USA",
-                "geoLocation": {
+                "location": {
                     "latitude": 40.7128,
                     "longitude": -74.0060
                 }
             },
             "operatingHours": {
-                "days": ["MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY", "SUNDAY"],
-                "timeRanges": [
-                    {
-                        "startTime": "09:00",
-                        "endTime": "22:00"
-                    }
-                ]
+                "monday": {
+                    "openTime": "09:00:00",
+                    "closeTime": "21:00:00",
+                    "closed": false
+                },
+                "tuesday": {
+                    "openTime": "09:00:00",
+                    "closeTime": "21:00:00",
+                    "closed": false
+                },
+                "wednesday": {
+                    "openTime": "09:00:00",
+                    "closeTime": "21:00:00",
+                    "closed": false
+                },
+                "thursday": {
+                    "openTime": "09:00:00",
+                    "closeTime": "21:00:00",
+                    "closed": false
+                },
+                "friday": {
+                    "openTime": "09:00:00",
+                    "closeTime": "22:00:00",
+                    "closed": false
+                },
+                "saturday": {
+                    "openTime": "10:00:00",
+                    "closeTime": "22:00:00",
+                    "closed": false
+                },
+                "sunday": {
+                    "openTime": "10:00:00",
+                    "closeTime": "20:00:00",
+                    "closed": false
+                }
             },
             "photos": [
                 {
                     "id": "photo1",
-                    "url": "https://example.com/photos/photo1.jpg",
-                    "description": "Restaurant exterior"
+                    "caption": "Restaurant exterior",
+                    "uploadedAt": "2024-01-15T10:30:00Z",
+                    "uploadedBy": "user456"
                 }
             ],
             "createdAt": "2024-01-15T10:30:00Z",
