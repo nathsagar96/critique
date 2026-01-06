@@ -11,9 +11,11 @@ import org.mapstruct.Mapping;
 public interface PhotoMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "url", ignore = true)
     @Mapping(target = "uploadedAt", ignore = true)
     @Mapping(target = "uploadedBy", ignore = true)
+    @Mapping(target = "fileName", ignore = true)
+    @Mapping(target = "contentType", ignore = true)
+    @Mapping(target = "filePath", ignore = true)
     Photo toEntity(PhotoUploadRequest request);
 
     PhotoResponse toResponse(Photo photo);

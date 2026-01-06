@@ -3,6 +3,7 @@ package com.critique.entities;
 import java.time.Instant;
 import lombok.*;
 import org.springframework.data.elasticsearch.annotations.DateFormat;
+import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
 import org.springframework.data.elasticsearch.annotations.FieldType;
 
@@ -10,12 +11,10 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Document(indexName = "photos")
 public class Photo {
     @Field(type = FieldType.Keyword)
     private String id;
-
-    @Field(type = FieldType.Keyword)
-    private String url;
 
     @Field(type = FieldType.Text)
     private String caption;
@@ -25,4 +24,13 @@ public class Photo {
 
     @Field(type = FieldType.Keyword)
     private String uploadedBy;
+
+    @Field(type = FieldType.Keyword)
+    private String fileName;
+
+    @Field(type = FieldType.Keyword)
+    private String contentType;
+
+    @Field(type = FieldType.Keyword)
+    private String filePath;
 }
