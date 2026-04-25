@@ -52,7 +52,7 @@ class RestaurantServiceTest {
         @DisplayName("shouldCreateRestaurantSuccessfully when valid request is provided")
         void shouldCreateRestaurantSuccessfully() {
             // Given
-            CreateRestaurantRequest request = new CreateRestaurantRequest(
+            var request = new CreateRestaurantRequest(
                     "Test Restaurant",
                     "Italian",
                     "Delicious Italian food",
@@ -63,7 +63,7 @@ class RestaurantServiceTest {
                     List.of("photo1", "photo2"));
 
             Restaurant mockRestaurant = createTestRestaurant();
-            RestaurantResponse expectedResponse = new RestaurantResponse(
+            var expectedResponse = new RestaurantResponse(
                     testRestaurantId,
                     "Test Restaurant",
                     "Italian",
@@ -79,7 +79,7 @@ class RestaurantServiceTest {
                     Instant.now(),
                     Instant.now());
 
-            List<Photo> mockPhotos = List.of(
+            var mockPhotos = List.of(
                     Photo.builder().id("photo1").build(),
                     Photo.builder().id("photo2").build());
 
@@ -104,7 +104,7 @@ class RestaurantServiceTest {
         @DisplayName("shouldCreateRestaurantSuccessfully when no photos are provided")
         void shouldCreateRestaurantSuccessfullyWhenNoPhotos() {
             // Given
-            CreateRestaurantRequest request = new CreateRestaurantRequest(
+            var request = new CreateRestaurantRequest(
                     "Test Restaurant",
                     "Italian",
                     "Delicious Italian food",
@@ -115,7 +115,7 @@ class RestaurantServiceTest {
                     null);
 
             Restaurant mockRestaurant = createTestRestaurant();
-            RestaurantResponse expectedResponse = new RestaurantResponse(
+            var expectedResponse = new RestaurantResponse(
                     testRestaurantId,
                     "Test Restaurant",
                     "Italian",
@@ -156,7 +156,7 @@ class RestaurantServiceTest {
         void shouldReturnRestaurantWhenExists() {
             // Given
             Restaurant mockRestaurant = createTestRestaurant();
-            RestaurantResponse expectedResponse = new RestaurantResponse(
+            var expectedResponse = new RestaurantResponse(
                     testRestaurantId,
                     "Test Restaurant",
                     "Italian",
@@ -210,7 +210,7 @@ class RestaurantServiceTest {
         void shouldUpdateRestaurantSuccessfullyWhenAuthorized() {
             // Given
             Restaurant existingRestaurant = createTestRestaurant();
-            UpdateRestaurantRequest request = new UpdateRestaurantRequest(
+            var request = new UpdateRestaurantRequest(
                     "Updated Restaurant",
                     "French",
                     "Updated description",
@@ -219,7 +219,7 @@ class RestaurantServiceTest {
                     null,
                     null);
 
-            RestaurantResponse expectedResponse = new RestaurantResponse(
+            var expectedResponse = new RestaurantResponse(
                     testRestaurantId,
                     "Updated Restaurant",
                     "French",
@@ -254,7 +254,7 @@ class RestaurantServiceTest {
         @DisplayName("shouldThrowResourceNotFoundException when restaurant does not exist for update")
         void shouldThrowResourceNotFoundExceptionWhenNotExistsForUpdate() {
             // Given
-            UpdateRestaurantRequest request = new UpdateRestaurantRequest(
+            var request = new UpdateRestaurantRequest(
                     "Updated Restaurant",
                     "French",
                     "Updated description",
@@ -278,7 +278,7 @@ class RestaurantServiceTest {
         void shouldThrowUnauthorizedExceptionWhenNotAuthorizedToUpdate() {
             // Given
             Restaurant existingRestaurant = createTestRestaurant();
-            UpdateRestaurantRequest request = new UpdateRestaurantRequest(
+            var request = new UpdateRestaurantRequest(
                     "Updated Restaurant",
                     "French",
                     "Updated description",
@@ -287,7 +287,7 @@ class RestaurantServiceTest {
                     null,
                     null);
 
-            String unauthorizedUserId = "unauthorized-user";
+            var unauthorizedUserId = "unauthorized-user";
 
             when(restaurantRepository.findById(testRestaurantId)).thenReturn(Optional.of(existingRestaurant));
 
@@ -338,7 +338,7 @@ class RestaurantServiceTest {
         void shouldThrowUnauthorizedExceptionWhenNotAuthorizedToDelete() {
             // Given
             Restaurant existingRestaurant = createTestRestaurant();
-            String unauthorizedUserId = "unauthorized-user";
+            var unauthorizedUserId = "unauthorized-user";
 
             when(restaurantRepository.findById(testRestaurantId)).thenReturn(Optional.of(existingRestaurant));
 
@@ -390,7 +390,7 @@ class RestaurantServiceTest {
         void shouldRecalculateAverageRatingCorrectly() {
             // Given
             Restaurant restaurant = createTestRestaurant();
-            List<Review> reviews = List.of(
+            var reviews = List.of(
                     Review.builder().rating(4).build(),
                     Review.builder().rating(5).build(),
                     Review.builder().rating(3).build());

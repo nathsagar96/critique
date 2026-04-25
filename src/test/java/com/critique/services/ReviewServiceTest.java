@@ -7,7 +7,6 @@ import static org.mockito.Mockito.*;
 
 import com.critique.dtos.requests.CreateReviewRequest;
 import com.critique.dtos.requests.UpdateReviewRequest;
-import com.critique.dtos.responses.PageResponse;
 import com.critique.dtos.responses.ReviewResponse;
 import com.critique.entities.Photo;
 import com.critique.entities.Restaurant;
@@ -56,7 +55,7 @@ class ReviewServiceTest {
         @DisplayName("shouldCreateReviewSuccessfully when valid request is provided")
         void shouldCreateReviewSuccessfully() {
             // Given
-            CreateReviewRequest request = new CreateReviewRequest("Great food!", 5, List.of("photo1", "photo2"));
+            var request = new CreateReviewRequest("Great food!", 5, List.of("photo1", "photo2"));
             Restaurant restaurant = createTestRestaurant();
             Review mockReview = createTestReview();
             ReviewResponse expectedResponse = createTestReviewResponse();
@@ -84,7 +83,7 @@ class ReviewServiceTest {
         @DisplayName("shouldCreateReviewSuccessfully when no photos are provided")
         void shouldCreateReviewSuccessfullyWithoutPhotos() {
             // Given
-            CreateReviewRequest request = new CreateReviewRequest("Great food!", 5, null);
+            var request = new CreateReviewRequest("Great food!", 5, null);
             Restaurant restaurant = createTestRestaurant();
             Review mockReview = createTestReview();
             ReviewResponse expectedResponse = createTestReviewResponse();
@@ -107,7 +106,7 @@ class ReviewServiceTest {
         @DisplayName("shouldThrowBusinessException when user has already reviewed the restaurant")
         void shouldThrowBusinessExceptionWhenUserAlreadyReviewed() {
             // Given
-            CreateReviewRequest request = new CreateReviewRequest("Great food!", 5, null);
+            var request = new CreateReviewRequest("Great food!", 5, null);
             Restaurant restaurant = createTestRestaurantWithExistingReview();
 
             when(restaurantService.getRestaurantEntity(testRestaurantId)).thenReturn(restaurant);
@@ -125,7 +124,7 @@ class ReviewServiceTest {
         @DisplayName("shouldThrowResourceNotFoundException when restaurant does not exist")
         void shouldThrowResourceNotFoundExceptionWhenRestaurantDoesNotExist() {
             // Given
-            CreateReviewRequest request = new CreateReviewRequest("Great food!", 5, null);
+            var request = new CreateReviewRequest("Great food!", 5, null);
 
             when(restaurantService.getRestaurantEntity(testRestaurantId))
                     .thenThrow(new ResourceNotFoundException("Restaurant not found with id " + testRestaurantId));
@@ -153,7 +152,7 @@ class ReviewServiceTest {
             when(restaurantService.getRestaurantEntity(testRestaurantId)).thenReturn(restaurant);
 
             // When
-            PageResponse<ReviewResponse> result = reviewService.getRestaurantReviews(testRestaurantId, null, 1, 10);
+            var result = reviewService.getRestaurantReviews(testRestaurantId, null, 1, 10);
 
             // Then
             assertNotNull(result);
@@ -187,8 +186,7 @@ class ReviewServiceTest {
             });
 
             // When
-            PageResponse<ReviewResponse> result =
-                    reviewService.getRestaurantReviews(testRestaurantId, "date,desc", 1, 2);
+            var result = reviewService.getRestaurantReviews(testRestaurantId, "date,desc", 1, 2);
 
             // Then
             assertNotNull(result);
@@ -224,14 +222,13 @@ class ReviewServiceTest {
             });
 
             // When
-            PageResponse<ReviewResponse> result =
-                    reviewService.getRestaurantReviews(testRestaurantId, "rating,asc", 1, 10);
+            var result = reviewService.getRestaurantReviews(testRestaurantId, "rating,asc", 1, 10);
 
             // Then
             assertNotNull(result);
             assertEquals(3, result.content().size());
             // Verify sorting by checking first review has lowest rating
-            assertEquals(3, result.content().get(0).rating());
+            assertEquals(3, result.content().getFirst().rating());
             // Verify last review has highest rating
             assertEquals(5, result.content().get(2).rating());
         }
@@ -245,8 +242,7 @@ class ReviewServiceTest {
             when(restaurantService.getRestaurantEntity(testRestaurantId)).thenReturn(restaurant);
 
             // When
-            PageResponse<ReviewResponse> result =
-                    reviewService.getRestaurantReviews(testRestaurantId, "date,desc", 5, 10);
+            var result = reviewService.getRestaurantReviews(testRestaurantId, "date,desc", 5, 10);
 
             // Then
             assertNotNull(result);
@@ -281,9 +277,9 @@ class ReviewServiceTest {
         void shouldUpdateReviewSuccessfully() {
             // Given
             Restaurant restaurant = createTestRestaurantWithExistingReview();
-            UpdateReviewRequest request = new UpdateReviewRequest("Updated content", 4, List.of("photo3"));
+            var request = new UpdateReviewRequest("Updated content", 4, List.of("photo3"));
 
-            ReviewResponse expectedResponse = new ReviewResponse(
+            var expectedResponse = new ReviewResponse(
                     testReviewId,
                     testRestaurantId,
                     testUserId,
@@ -315,7 +311,7 @@ class ReviewServiceTest {
         void shouldThrowResourceNotFoundExceptionWhenReviewDoesNotExist() {
             // Given
             Restaurant restaurant = createTestRestaurant();
-            UpdateReviewRequest request = new UpdateReviewRequest("Updated content", 4, null);
+            var request = new UpdateReviewRequest("Updated content", 4, null);
 
             when(restaurantService.getRestaurantEntity(testRestaurantId)).thenReturn(restaurant);
 
@@ -332,7 +328,7 @@ class ReviewServiceTest {
         void shouldThrowUnauthorizedExceptionWhenUserNotReviewOwner() {
             // Given
             Restaurant restaurant = createTestRestaurantWithExistingReview();
-            UpdateReviewRequest request = new UpdateReviewRequest("Updated content", 4, null);
+            var request = new UpdateReviewRequest("Updated content", 4, null);
 
             when(restaurantService.getRestaurantEntity(testRestaurantId)).thenReturn(restaurant);
 
@@ -349,7 +345,7 @@ class ReviewServiceTest {
         void shouldThrowBusinessExceptionWhenReviewOutsideEditWindow() {
             // Given
             Restaurant restaurant = createTestRestaurantWithOldReview();
-            UpdateReviewRequest request = new UpdateReviewRequest("Updated content", 4, null);
+            var request = new UpdateReviewRequest("Updated content", 4, null);
 
             when(restaurantService.getRestaurantEntity(testRestaurantId)).thenReturn(restaurant);
 
@@ -366,9 +362,9 @@ class ReviewServiceTest {
         void shouldUpdatePhotosWhenPhotoIdsAreEmpty() {
             // Given
             Restaurant restaurant = createTestRestaurantWithExistingReview();
-            UpdateReviewRequest request = new UpdateReviewRequest("Updated content", 4, List.of());
+            var request = new UpdateReviewRequest("Updated content", 4, List.of());
 
-            ReviewResponse expectedResponse = new ReviewResponse(
+            var expectedResponse = new ReviewResponse(
                     testReviewId,
                     testRestaurantId,
                     testUserId,
@@ -479,7 +475,7 @@ class ReviewServiceTest {
 
     private Restaurant createTestRestaurantWithReviews() {
         Restaurant restaurant = createTestRestaurant();
-        List<Review> reviews = new ArrayList<>();
+        var reviews = new ArrayList<Review>();
 
         Review review1 = Review.builder()
                 .id("review1")

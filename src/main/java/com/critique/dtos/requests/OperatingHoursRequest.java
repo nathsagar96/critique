@@ -2,10 +2,7 @@ package com.critique.dtos.requests;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(
-        description = "Request DTO for restaurant operating hours",
-        example =
-                """
+@Schema(description = "Request DTO for restaurant operating hours", example = """
         {
             "monday": {
                 "openTime": "09:00:00",

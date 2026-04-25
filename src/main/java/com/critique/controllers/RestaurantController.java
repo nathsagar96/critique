@@ -35,7 +35,7 @@ public class RestaurantController {
                     @Valid
                     @ModelAttribute
                     RestaurantSearchRequest searchRequest) {
-        PageResponse<RestaurantSummaryResponse> response = searchService.searchRestaurants(searchRequest);
+        var response = searchService.searchRestaurants(searchRequest);
 
         return ResponseEntity.ok(response);
     }

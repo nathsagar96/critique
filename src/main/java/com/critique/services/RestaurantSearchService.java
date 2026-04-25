@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.client.elc.NativeQuery;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.data.elasticsearch.core.SearchHit;
-import org.springframework.data.elasticsearch.core.SearchHits;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -30,8 +29,8 @@ public class RestaurantSearchService {
     public PageResponse<RestaurantSummaryResponse> searchRestaurants(RestaurantSearchRequest searchRequest) {
         log.debug("Searching restaurants with parameters: {}", searchRequest);
 
-        List<Query> mustQueries = new ArrayList<>();
-        List<Query> filterQueries = new ArrayList<>();
+        var mustQueries = new ArrayList<Query>();
+        var filterQueries = new ArrayList<Query>();
 
         // Text search with fuzzy matching
         if (searchRequest.q() != null && !searchRequest.q().isBlank()) {
@@ -63,7 +62,7 @@ public class RestaurantSearchService {
         }
 
         // Build the main bool query
-        BoolQuery.Builder boolBuilder = new BoolQuery.Builder();
+        var boolBuilder = new BoolQuery.Builder();
 
         if (!mustQueries.isEmpty()) {
             boolBuilder.must(mustQueries);
@@ -90,15 +89,15 @@ public class RestaurantSearchService {
                 .build();
 
         // Execute search
-        SearchHits<Restaurant> searchHits = elasticsearchOperations.search(nativeQuery, Restaurant.class);
+        var searchHits = elasticsearchOperations.search(nativeQuery, Restaurant.class);
 
         List<Restaurant> restaurants =
                 searchHits.stream().map(SearchHit::getContent).toList();
 
-        List<RestaurantSummaryResponse> responses = restaurantMapper.toSummaryResponseList(restaurants);
+        var responses = restaurantMapper.toSummaryResponseList(restaurants);
 
-        long totalElements = searchHits.getTotalHits();
-        int totalPages = (int) Math.ceil((double) totalElements / searchRequest.size());
+        var totalElements = searchHits.getTotalHits();
+        var totalPages = (int) Math.ceil((double) totalElements / searchRequest.size());
 
         return new PageResponse<>(responses, searchRequest.page(), searchRequest.size(), totalElements, totalPages);
     }

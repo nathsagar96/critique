@@ -18,17 +18,17 @@ spring:
       max-file-size: 5MB
       max-request-size: 10MB
 
+  web:
+    error:
+      include-binding-errors: always
+      include-exception: false
+      include-message: always
+      include-stacktrace: never
+
 app:
   upload:
     dir: uploads
     max-file-size: 5242880 # 5MB in bytes
-
-server:
-  error:
-    include-message: always
-    include-binding-errors: always
-    include-stacktrace: never
-    include-exception: false
 
 logging:
   level:

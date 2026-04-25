@@ -43,7 +43,7 @@ public class ReviewController {
                     @Max(50)
                     Integer size) {
 
-        PageResponse<ReviewResponse> response = reviewService.getRestaurantReviews(restaurantId, sort, page, size);
+        var response = reviewService.getRestaurantReviews(restaurantId, sort, page, size);
 
         return ResponseEntity.ok(response);
     }

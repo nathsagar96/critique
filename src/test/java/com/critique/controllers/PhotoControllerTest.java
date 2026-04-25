@@ -51,13 +51,12 @@ class PhotoControllerTest {
         @DisplayName("shouldUploadPhotoSuccessfully when valid file and caption are provided")
         void shouldUploadPhotoSuccessfully() throws Exception {
             // Given
-            MockMultipartFile file =
-                    new MockMultipartFile("file", "test.jpg", MediaType.IMAGE_JPEG_VALUE, testPhotoData);
+            var file = new MockMultipartFile("file", "test.jpg", MediaType.IMAGE_JPEG_VALUE, testPhotoData);
 
-            String testCaption = "Test caption";
-            PhotoUploadRequest request = new PhotoUploadRequest(testCaption);
+            var testCaption = "Test caption";
+            var request = new PhotoUploadRequest(testCaption);
 
-            PhotoResponse expectedResponse = new PhotoResponse(testPhotoId, testCaption, Instant.now(), testUserId);
+            var expectedResponse = new PhotoResponse(testPhotoId, testCaption, Instant.now(), testUserId);
 
             when(securityUtils.getCurrentUserId()).thenReturn(testUserId);
             when(photoService.uploadPhoto(any(MockMultipartFile.class), any(PhotoUploadRequest.class), anyString()))
@@ -86,7 +85,7 @@ class PhotoControllerTest {
         void shouldReturnPhotoDataWhenPhotoExists() throws Exception {
             // Given
             when(photoService.getPhoto(anyString())).thenReturn(testPhotoData);
-            String testContentType = "image/jpeg";
+            var testContentType = "image/jpeg";
             when(photoService.getPhotoContentType(anyString())).thenReturn(testContentType);
 
             // When & Then
@@ -105,10 +104,9 @@ class PhotoControllerTest {
         @DisplayName("shouldUpdateCaptionSuccessfully when user is authorized")
         void shouldUpdateCaptionSuccessfullyWhenAuthorized() throws Exception {
             // Given
-            PhotoUploadRequest request = new PhotoUploadRequest("Updated caption");
+            var request = new PhotoUploadRequest("Updated caption");
 
-            PhotoResponse expectedResponse =
-                    new PhotoResponse(testPhotoId, "Updated caption", Instant.now(), testUserId);
+            var expectedResponse = new PhotoResponse(testPhotoId, "Updated caption", Instant.now(), testUserId);
 
             when(securityUtils.getCurrentUserId()).thenReturn(testUserId);
             when(photoService.updateCaption(anyString(), anyString(), anyString()))

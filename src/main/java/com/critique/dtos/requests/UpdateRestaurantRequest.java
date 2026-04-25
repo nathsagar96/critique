@@ -5,10 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-@Schema(
-        description = "Request DTO for updating restaurant information",
-        example =
-                """
+@Schema(description = "Request DTO for updating restaurant information", example = """
         {
             "name": "Tasty Bites Updated",
             "cuisineType": "Italian",
@@ -68,21 +65,28 @@ import jakarta.validation.constraints.Size;
         }""")
 public record UpdateRestaurantRequest(
         @Schema(description = "Name of the restaurant", example = "Tasty Bites Updated")
-                @Size(max = 200, message = "Name must not exceed 200 characters")
-                String name,
-        @Schema(description = "Type of cuisine served", example = "Italian") String cuisineType,
+        @Size(max = 200, message = "Name must not exceed 200 characters")
+        String name,
+
+        @Schema(description = "Type of cuisine served", example = "Italian")
+        String cuisineType,
+
         @Schema(
-                        description = "Description of the restaurant",
-                        example = "Authentic Italian cuisine with a modern twist")
-                @Size(max = 2000, message = "Description must not exceed 2000 characters")
-                String description,
+                description = "Description of the restaurant",
+                example = "Authentic Italian cuisine with a modern twist")
+        @Size(max = 2000, message = "Description must not exceed 2000 characters")
+        String description,
+
         @Schema(description = "Restaurant phone number", example = "+1234567890")
-                @Pattern(regexp = "^[+]?[(]?[0-9]{1,4}[)]?[-\\s./0-9]*$", message = "Invalid phone number")
-                String phoneNumber,
+        @Pattern(regexp = "^[+]?[(]?[0-9]{1,4}[)]?[-\\s./0-9]*$", message = "Invalid phone number")
+        String phoneNumber,
+
         @Schema(description = "Restaurant website URL", example = "https://tastybites.com")
-                @Pattern(
-                        regexp = "^(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})([/\\w .-]*)*/?$",
-                        message = "Invalid website URL")
-                String website,
-        @Schema(description = "Restaurant address information") @Valid AddressRequest address,
-        @Schema(description = "Restaurant operating hours") @Valid OperatingHoursRequest operatingHours) {}
+        @Pattern(regexp = "^(https?://)?([\\da-z.-]+)\\.([a-z.]{2,6})([/\\w .-]*)*/?$", message = "Invalid website URL")
+        String website,
+
+        @Schema(description = "Restaurant address information") @Valid
+        AddressRequest address,
+
+        @Schema(description = "Restaurant operating hours") @Valid
+        OperatingHoursRequest operatingHours) {}

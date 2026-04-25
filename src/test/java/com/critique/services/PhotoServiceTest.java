@@ -61,11 +61,11 @@ class PhotoServiceTest {
         @DisplayName("shouldUploadPhotoSuccessfully when valid file and request are provided")
         void shouldUploadPhotoSuccessfully() {
             // Given
-            MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", "test content".getBytes());
+            var file = new MockMultipartFile("file", "test.jpg", "image/jpeg", "test content".getBytes());
 
-            PhotoUploadRequest request = new PhotoUploadRequest("Test caption");
+            var request = new PhotoUploadRequest("Test caption");
             Photo mockPhoto = createTestPhoto();
-            PhotoResponse expectedResponse = new PhotoResponse(testPhotoId, "Test caption", Instant.now(), testUserId);
+            var expectedResponse = new PhotoResponse(testPhotoId, "Test caption", Instant.now(), testUserId);
 
             when(photoRepository.save(any(Photo.class))).thenReturn(mockPhoto);
             when(photoMapper.toResponse(any(Photo.class))).thenReturn(expectedResponse);
@@ -86,11 +86,11 @@ class PhotoServiceTest {
         @DisplayName("shouldUploadPhotoSuccessfully when file is uploaded without caption")
         void shouldUploadPhotoSuccessfullyWithoutCaption() {
             // Given
-            MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", "test content".getBytes());
+            var file = new MockMultipartFile("file", "test.jpg", "image/jpeg", "test content".getBytes());
 
-            PhotoUploadRequest request = new PhotoUploadRequest(null);
+            var request = new PhotoUploadRequest(null);
             Photo mockPhoto = createTestPhoto();
-            PhotoResponse expectedResponse = new PhotoResponse(testPhotoId, null, Instant.now(), testUserId);
+            var expectedResponse = new PhotoResponse(testPhotoId, null, Instant.now(), testUserId);
 
             when(photoRepository.save(any(Photo.class))).thenReturn(mockPhoto);
             when(photoMapper.toResponse(any(Photo.class))).thenReturn(expectedResponse);
@@ -108,7 +108,7 @@ class PhotoServiceTest {
         @DisplayName("shouldThrowBusinessException when file is null")
         void shouldThrowBusinessExceptionWhenFileIsNull() {
             // Given
-            PhotoUploadRequest request = new PhotoUploadRequest("Test caption");
+            var request = new PhotoUploadRequest("Test caption");
 
             // When & Then
             BusinessException exception =
@@ -121,9 +121,9 @@ class PhotoServiceTest {
         @DisplayName("shouldThrowBusinessException when file is empty")
         void shouldThrowBusinessExceptionWhenFileIsEmpty() {
             // Given
-            MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", new byte[0]);
+            var file = new MockMultipartFile("file", "test.jpg", "image/jpeg", new byte[0]);
 
-            PhotoUploadRequest request = new PhotoUploadRequest("Test caption");
+            var request = new PhotoUploadRequest("Test caption");
 
             // When & Then
             BusinessException exception =
@@ -137,9 +137,9 @@ class PhotoServiceTest {
         void shouldThrowBusinessExceptionWhenFileSizeExceedsMaximum() {
             // Given
             byte[] largeContent = new byte[5242881]; // 5MB + 1 byte
-            MockMultipartFile file = new MockMultipartFile("file", "test.jpg", "image/jpeg", largeContent);
+            var file = new MockMultipartFile("file", "test.jpg", "image/jpeg", largeContent);
 
-            PhotoUploadRequest request = new PhotoUploadRequest("Test caption");
+            var request = new PhotoUploadRequest("Test caption");
 
             // When & Then
             BusinessException exception =
@@ -152,9 +152,9 @@ class PhotoServiceTest {
         @DisplayName("shouldThrowBusinessException when file type is not allowed")
         void shouldThrowBusinessExceptionWhenFileTypeNotAllowed() {
             // Given
-            MockMultipartFile file = new MockMultipartFile("file", "test.gif", "image/gif", "test content".getBytes());
+            var file = new MockMultipartFile("file", "test.gif", "image/gif", "test content".getBytes());
 
-            PhotoUploadRequest request = new PhotoUploadRequest("Test caption");
+            var request = new PhotoUploadRequest("Test caption");
 
             // When & Then
             BusinessException exception =
@@ -171,9 +171,9 @@ class PhotoServiceTest {
         @DisplayName("shouldThrowBusinessException when file has no name")
         void shouldThrowBusinessExceptionWhenFileHasNoName() {
             // Given
-            MockMultipartFile file = new MockMultipartFile("file", "", "image/jpeg", "test content".getBytes());
+            var file = new MockMultipartFile("file", "", "image/jpeg", "test content".getBytes());
 
-            PhotoUploadRequest request = new PhotoUploadRequest("Test caption");
+            var request = new PhotoUploadRequest("Test caption");
 
             // When & Then
             BusinessException exception =
@@ -191,7 +191,7 @@ class PhotoServiceTest {
         @DisplayName("shouldReturnEmptyList when photoIds is null")
         void shouldReturnEmptyListWhenPhotoIdsIsNull() {
             // When
-            List<Photo> result = photoService.getPhotosByIds(null);
+            var result = photoService.getPhotosByIds(null);
 
             // Then
             assertNotNull(result);
@@ -202,7 +202,7 @@ class PhotoServiceTest {
         @DisplayName("shouldReturnEmptyList when photoIds is empty")
         void shouldReturnEmptyListWhenPhotoIdsIsEmpty() {
             // When
-            List<Photo> result = photoService.getPhotosByIds(List.of());
+            var result = photoService.getPhotosByIds(List.of());
 
             // Then
             assertNotNull(result);
@@ -213,14 +213,14 @@ class PhotoServiceTest {
         @DisplayName("shouldReturnPhotos when valid photoIds are provided")
         void shouldReturnPhotosWhenValidPhotoIdsAreProvided() {
             // Given
-            List<String> photoIds = List.of("photo1", "photo2");
+            var photoIds = List.of("photo1", "photo2");
             Photo photo1 = createTestPhotoWithId("photo1");
             Photo photo2 = createTestPhotoWithId("photo2");
 
             when(photoRepository.findAllById(photoIds)).thenReturn(List.of(photo1, photo2));
 
             // When
-            List<Photo> result = photoService.getPhotosByIds(photoIds);
+            var result = photoService.getPhotosByIds(photoIds);
 
             // Then
             assertNotNull(result);
@@ -293,7 +293,7 @@ class PhotoServiceTest {
         void shouldReturnContentTypeWhenPhotoExists() {
             // Given
             Photo mockPhoto = createTestPhoto();
-            String expectedContentType = "image/jpeg";
+            var expectedContentType = "image/jpeg";
 
             when(photoRepository.findById(testPhotoId)).thenReturn(Optional.of(mockPhoto));
             ReflectionTestUtils.setField(mockPhoto, "contentType", expectedContentType);
@@ -328,8 +328,8 @@ class PhotoServiceTest {
         void shouldUpdateCaptionSuccessfullyWhenUserIsAuthorized() {
             // Given
             Photo existingPhoto = createTestPhoto();
-            String newCaption = "Updated caption";
-            PhotoResponse expectedResponse = new PhotoResponse(testPhotoId, newCaption, Instant.now(), testUserId);
+            var newCaption = "Updated caption";
+            var expectedResponse = new PhotoResponse(testPhotoId, newCaption, Instant.now(), testUserId);
 
             when(photoRepository.findById(testPhotoId)).thenReturn(Optional.of(existingPhoto));
             when(photoRepository.save(any(Photo.class))).thenReturn(existingPhoto);
@@ -363,7 +363,7 @@ class PhotoServiceTest {
         void shouldThrowUnauthorizedExceptionWhenUserIsNotAuthorizedToUpdate() {
             // Given
             Photo existingPhoto = createTestPhoto();
-            String unauthorizedUserId = "unauthorized-user";
+            var unauthorizedUserId = "unauthorized-user";
 
             when(photoRepository.findById(testPhotoId)).thenReturn(Optional.of(existingPhoto));
 
@@ -417,7 +417,7 @@ class PhotoServiceTest {
         void shouldThrowUnauthorizedExceptionWhenUserIsNotAuthorizedToDelete() {
             // Given
             Photo existingPhoto = createTestPhoto();
-            String unauthorizedUserId = "unauthorized-user";
+            var unauthorizedUserId = "unauthorized-user";
 
             when(photoRepository.findById(testPhotoId)).thenReturn(Optional.of(existingPhoto));
 

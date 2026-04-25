@@ -10,13 +10,15 @@ import com.critique.repositories.PhotoRepository;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.Instant;
-import java.util.*;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jspecify.annotations.Nullable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.elasticsearch.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
@@ -50,7 +52,7 @@ public class PhotoService {
             String fileExtension = extractFileExtension(originalFileName);
             String fileName = photoId + fileExtension;
 
-            Path uploadPath = Paths.get(uploadDir);
+            Path uploadPath = Path.of(uploadDir);
             if (!Files.exists(uploadPath)) {
                 Files.createDirectories(uploadPath);
             }
@@ -84,7 +86,7 @@ public class PhotoService {
             return "";
         }
 
-        int lastDotIndex = filename.lastIndexOf('.');
+        var lastDotIndex = filename.lastIndexOf('.');
         if (lastDotIndex == -1 || lastDotIndex == filename.length() - 1) {
             return "";
         }
@@ -92,13 +94,13 @@ public class PhotoService {
         return filename.substring(lastDotIndex);
     }
 
-    public List<Photo> getPhotosByIds(List<String> photoIds) {
+    public List<Photo> getPhotosByIds(@Nullable List<String> photoIds) {
         if (photoIds == null || photoIds.isEmpty()) {
             return List.of();
         }
 
-        Iterable<Photo> photosIterable = photoRepository.findAllById(photoIds);
-        List<Photo> photos = new ArrayList<>();
+        var photosIterable = photoRepository.findAllById(photoIds);
+        var photos = new ArrayList<Photo>();
         photosIterable.forEach(photos::add);
         return photos;
     }
@@ -109,7 +111,7 @@ public class PhotoService {
                 .orElseThrow(() -> new BusinessException("Photo not found with ID: " + photoId));
 
         try {
-            Path filePath = Paths.get(photo.getFilePath());
+            Path filePath = Path.of(photo.getFilePath());
             log.debug("Reading photo file from: {}", filePath);
             return Files.readAllBytes(filePath);
         } catch (IOException e) {
@@ -131,8 +133,7 @@ public class PhotoService {
         }
 
         if (file.getSize() > maxFileSize) {
-            throw new BusinessException(
-                    String.format("File size exceeds maximum allowed size of %d bytes", maxFileSize));
+            throw new BusinessException("File size exceeds maximum allowed size of %d bytes".formatted(maxFileSize));
         }
 
         String contentType = file.getContentType();
@@ -172,7 +173,7 @@ public class PhotoService {
         }
 
         try {
-            Path filePath = Paths.get(photo.getFilePath());
+            Path filePath = Path.of(photo.getFilePath());
             Files.deleteIfExists(filePath);
             photoRepository.delete(photo);
             log.info("Photo deleted successfully with ID: {}", photoId);

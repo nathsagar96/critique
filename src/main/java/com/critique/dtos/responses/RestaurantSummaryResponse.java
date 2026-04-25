@@ -2,10 +2,7 @@ package com.critique.dtos.responses;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-@Schema(
-        description = "Summary response DTO for restaurant information",
-        example =
-                """
+@Schema(description = "Summary response DTO for restaurant information", example = """
         {
             "id": "rest123",
             "name": "Tasty Bites",
@@ -27,9 +24,20 @@ import io.swagger.v3.oas.annotations.media.Schema;
             }
         }""")
 public record RestaurantSummaryResponse(
-        @Schema(description = "Unique identifier of the restaurant", example = "rest123") String id,
-        @Schema(description = "Name of the restaurant", example = "Tasty Bites") String name,
-        @Schema(description = "Type of cuisine served", example = "Italian") String cuisineType,
-        @Schema(description = "Average rating of the restaurant", example = "4.5") Double averageRating,
-        @Schema(description = "Total number of reviews", example = "120") Integer totalReviews,
-        @Schema(description = "Restaurant address information") AddressResponse address) {}
+        @Schema(description = "Unique identifier of the restaurant", example = "rest123")
+        String id,
+
+        @Schema(description = "Name of the restaurant", example = "Tasty Bites")
+        String name,
+
+        @Schema(description = "Type of cuisine served", example = "Italian")
+        String cuisineType,
+
+        @Schema(description = "Average rating of the restaurant", example = "4.5")
+        Double averageRating,
+
+        @Schema(description = "Total number of reviews", example = "120")
+        Integer totalReviews,
+
+        @Schema(description = "Restaurant address information")
+        AddressResponse address) {}

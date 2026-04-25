@@ -4,7 +4,6 @@ import com.critique.dtos.requests.CreateReviewRequest;
 import com.critique.dtos.requests.UpdateReviewRequest;
 import com.critique.dtos.responses.PageResponse;
 import com.critique.dtos.responses.ReviewResponse;
-import com.critique.entities.Photo;
 import com.critique.entities.Restaurant;
 import com.critique.entities.Review;
 import com.critique.exceptions.BusinessException;
@@ -39,7 +38,7 @@ public class ReviewService {
         Restaurant restaurant = restaurantService.getRestaurantEntity(restaurantId);
 
         if (restaurant.getReviews() != null) {
-            boolean hasReviewed = restaurant.getReviews().stream()
+            var hasReviewed = restaurant.getReviews().stream()
                     .anyMatch(review -> review.getUserId().equals(userId));
 
             if (hasReviewed) {
@@ -56,7 +55,7 @@ public class ReviewService {
         review.setLastEditedAt(Instant.now());
 
         if (request.photoIds() != null && !request.photoIds().isEmpty()) {
-            List<Photo> photos = photoService.getPhotosByIds(request.photoIds());
+            var photos = photoService.getPhotosByIds(request.photoIds());
             review.setPhotos(photos);
         } else {
             review.setPhotos(new ArrayList<>());
@@ -87,23 +86,23 @@ public class ReviewService {
             return new PageResponse<>(List.of(), page, size, 0, 0);
         }
 
-        Comparator<Review> comparator = parseSortParameter(sortParam);
+        var comparator = parseSortParameter(sortParam);
 
         List<Review> sortedReviews =
                 restaurant.getReviews().stream().sorted(comparator).toList();
 
-        int startIndex = (page - 1) * size;
-        int endIndex = Math.min(startIndex + size, sortedReviews.size());
+        var startIndex = (page - 1) * size;
+        var endIndex = Math.min(startIndex + size, sortedReviews.size());
 
         if (startIndex >= sortedReviews.size()) {
             return new PageResponse<>(
                     List.of(), page, size, sortedReviews.size(), (int) Math.ceil((double) sortedReviews.size() / size));
         }
 
-        List<Review> paginatedReviews = sortedReviews.subList(startIndex, endIndex);
-        List<ReviewResponse> responses = reviewMapper.toResponseList(paginatedReviews);
+        var paginatedReviews = sortedReviews.subList(startIndex, endIndex);
+        var responses = reviewMapper.toResponseList(paginatedReviews);
 
-        int totalPages = (int) Math.ceil((double) sortedReviews.size() / size);
+        var totalPages = (int) Math.ceil((double) sortedReviews.size() / size);
 
         return new PageResponse<>(responses, page, size, sortedReviews.size(), totalPages);
     }
@@ -129,7 +128,7 @@ public class ReviewService {
             throw new BusinessException("Reviews can only be edited within 48 hours of posting");
         }
 
-        int oldRating = review.getRating();
+        var oldRating = review.getRating();
 
         reviewMapper.updateEntity(request, review);
         review.setLastEditedAt(Instant.now());
@@ -138,7 +137,7 @@ public class ReviewService {
             if (request.photoIds().isEmpty()) {
                 review.setPhotos(new ArrayList<>());
             } else {
-                List<Photo> photos = photoService.getPhotosByIds(request.photoIds());
+                var photos = photoService.getPhotosByIds(request.photoIds());
                 review.setPhotos(photos);
             }
         }

@@ -4,7 +4,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.critique.dtos.requests.CreateReviewRequest;
 import com.critique.dtos.requests.UpdateReviewRequest;
@@ -55,7 +56,7 @@ class ReviewControllerTest {
         @DisplayName("shouldReturnPageResponse when get restaurant reviews")
         void shouldReturnPageResponseWhenGetRestaurantReviews() throws Exception {
             // Given
-            ReviewResponse reviewResponse = new ReviewResponse(
+            var reviewResponse = new ReviewResponse(
                     testReviewId,
                     testRestaurantId,
                     testUserId,
@@ -67,7 +68,7 @@ class ReviewControllerTest {
                     Instant.now(),
                     true);
 
-            PageResponse<ReviewResponse> mockResponse = new PageResponse<>(List.of(reviewResponse), 1, 20, 1L, 1);
+            var mockResponse = new PageResponse<ReviewResponse>(List.of(reviewResponse), 1, 20, 1L, 1);
 
             when(reviewService.getRestaurantReviews(anyString(), anyString(), any(Integer.class), any(Integer.class)))
                     .thenReturn(mockResponse);
@@ -94,10 +95,9 @@ class ReviewControllerTest {
         @DisplayName("shouldCreateReviewSuccessfully when valid request is provided")
         void shouldCreateReviewSuccessfully() throws Exception {
             // Given
-            CreateReviewRequest request =
-                    new CreateReviewRequest("Great food and service!", 5, List.of("photo1", "photo2"));
+            var request = new CreateReviewRequest("Great food and service!", 5, List.of("photo1", "photo2"));
 
-            ReviewResponse expectedResponse = new ReviewResponse(
+            var expectedResponse = new ReviewResponse(
                     testReviewId,
                     testRestaurantId,
                     testUserId,
@@ -135,10 +135,9 @@ class ReviewControllerTest {
         @DisplayName("shouldUpdateReviewSuccessfully when user is authorized")
         void shouldUpdateReviewSuccessfullyWhenAuthorized() throws Exception {
             // Given
-            UpdateReviewRequest request =
-                    new UpdateReviewRequest("Updated review - still great!", 4, List.of("photo3"));
+            var request = new UpdateReviewRequest("Updated review - still great!", 4, List.of("photo3"));
 
-            ReviewResponse expectedResponse = new ReviewResponse(
+            var expectedResponse = new ReviewResponse(
                     testReviewId,
                     testRestaurantId,
                     testUserId,

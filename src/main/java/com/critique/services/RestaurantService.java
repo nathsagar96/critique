@@ -3,7 +3,6 @@ package com.critique.services;
 import com.critique.dtos.requests.CreateRestaurantRequest;
 import com.critique.dtos.requests.UpdateRestaurantRequest;
 import com.critique.dtos.responses.RestaurantResponse;
-import com.critique.entities.Photo;
 import com.critique.entities.Restaurant;
 import com.critique.entities.Review;
 import com.critique.exceptions.UnauthorizedException;
@@ -11,7 +10,6 @@ import com.critique.mappers.RestaurantMapper;
 import com.critique.repositories.RestaurantRepository;
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.elasticsearch.ResourceNotFoundException;
@@ -38,7 +36,7 @@ public class RestaurantService {
         restaurant.setReviews(new ArrayList<>());
 
         if (request.photoIds() != null && !request.photoIds().isEmpty()) {
-            List<Photo> photos = photoService.getPhotosByIds(request.photoIds());
+            var photos = photoService.getPhotosByIds(request.photoIds());
             restaurant.setPhotos(photos);
         } else {
             restaurant.setPhotos(new ArrayList<>());
@@ -95,7 +93,7 @@ public class RestaurantService {
             return;
         }
 
-        double average = restaurant.getReviews().stream()
+        var average = restaurant.getReviews().stream()
                 .mapToInt(Review::getRating)
                 .average()
                 .orElse(0.0);

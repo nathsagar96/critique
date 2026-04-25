@@ -5,10 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-@Schema(
-        description = "Request DTO for address information",
-        example =
-                """
+@Schema(description = "Request DTO for address information", example = """
         {
             "streetNumber": "123",
             "streetName": "Main St",
@@ -24,17 +21,27 @@ import jakarta.validation.constraints.NotNull;
         }""")
 public record AddressRequest(
         @Schema(description = "Street number", example = "123") @NotBlank(message = "Street number is required")
-                String streetNumber,
+        String streetNumber,
+
         @Schema(description = "Street name", example = "Main St") @NotBlank(message = "Street name is required")
-                String streetName,
-        @Schema(description = "Unit/apartment number", example = "Apt 4B") String unit,
-        @Schema(description = "City name", example = "New York") @NotBlank(message = "City is required") String city,
-        @Schema(description = "State/province", example = "NY") @NotBlank(message = "State is required") String state,
+        String streetName,
+
+        @Schema(description = "Unit/apartment number", example = "Apt 4B")
+        String unit,
+
+        @Schema(description = "City name", example = "New York") @NotBlank(message = "City is required")
+        String city,
+
+        @Schema(description = "State/province", example = "NY") @NotBlank(message = "State is required")
+        String state,
+
         @Schema(description = "Postal/zip code", example = "10001") @NotBlank(message = "Postal code is required")
-                String postalCode,
+        String postalCode,
+
         @Schema(description = "Country name", example = "USA") @NotBlank(message = "Country is required")
-                String country,
+        String country,
+
         @Schema(description = "Geographic location coordinates")
-                @NotNull(message = "Location coordinates are required")
-                @Valid
-                GeoLocationRequest location) {}
+        @NotNull(message = "Location coordinates are required")
+        @Valid
+        GeoLocationRequest location) {}

@@ -2,7 +2,10 @@ package com.critique.mappers;
 
 import com.critique.dtos.requests.*;
 import com.critique.dtos.responses.*;
-import com.critique.entities.*;
+import com.critique.entities.Address;
+import com.critique.entities.OperatingHours;
+import com.critique.entities.Restaurant;
+import com.critique.entities.TimeRange;
 import java.util.List;
 import org.mapstruct.*;
 import org.springframework.data.elasticsearch.core.geo.GeoPoint;

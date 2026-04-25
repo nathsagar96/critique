@@ -4,7 +4,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.critique.dtos.requests.AddressRequest;
 import com.critique.dtos.requests.CreateRestaurantRequest;
@@ -82,7 +83,7 @@ class RestaurantControllerTest {
     }
 
     private @NonNull PageResponse<RestaurantSummaryResponse> getRestaurantSummaryResponsePageResponse() {
-        AddressResponse addressResponse = new AddressResponse(
+        var addressResponse = new AddressResponse(
                 "123",
                 "Main St",
                 "Apt 4B",
@@ -111,7 +112,7 @@ class RestaurantControllerTest {
             // Given
             CreateRestaurantRequest request = getCreateRestaurantRequest();
 
-            RestaurantResponse expectedResponse = new RestaurantResponse(
+            var expectedResponse = new RestaurantResponse(
                     testRestaurantId,
                     "Test Restaurant",
                     "Italian",
@@ -143,7 +144,7 @@ class RestaurantControllerTest {
     }
 
     private static @NonNull CreateRestaurantRequest getCreateRestaurantRequest() {
-        AddressRequest addressRequest = new AddressRequest(
+        var addressRequest = new AddressRequest(
                 "123", "Main St", null, "New York", "NY", "10001", "USA", new GeoLocationRequest(40.7128, -74.0060));
 
         return new CreateRestaurantRequest(
@@ -165,7 +166,7 @@ class RestaurantControllerTest {
         @DisplayName("shouldReturnRestaurant when restaurant exists")
         void shouldReturnRestaurantWhenExists() throws Exception {
             // Given
-            RestaurantResponse expectedResponse = new RestaurantResponse(
+            var expectedResponse = new RestaurantResponse(
                     testRestaurantId,
                     "Test Restaurant",
                     "Italian",
@@ -200,7 +201,7 @@ class RestaurantControllerTest {
         @DisplayName("shouldUpdateRestaurantSuccessfully when user is authorized")
         void shouldUpdateRestaurantSuccessfullyWhenAuthorized() throws Exception {
             // Given
-            UpdateRestaurantRequest request = new UpdateRestaurantRequest(
+            var request = new UpdateRestaurantRequest(
                     "Updated Restaurant",
                     "French",
                     "Updated description",
@@ -209,7 +210,7 @@ class RestaurantControllerTest {
                     null,
                     null);
 
-            RestaurantResponse expectedResponse = new RestaurantResponse(
+            var expectedResponse = new RestaurantResponse(
                     testRestaurantId,
                     "Updated Restaurant",
                     "French",
